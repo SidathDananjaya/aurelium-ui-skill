@@ -35,7 +35,15 @@ The weighting in `references/quality/rubric.md` is informed by publicly describe
 
 ## Fonts
 
-All fonts recommended by this skill are distributed under the SIL Open Font License. Their copyright and license terms belong to their respective authors and foundries. Aurelium UI does not bundle or redistribute font files. It only names fonts and links to where they are published.
+All fonts recommended by this skill are distributed under the SIL Open Font License, Version 1.1. Their copyright and license terms belong to their respective authors and foundries. Aurelium UI does not bundle or redistribute font files. It only names fonts and points to where they are published.
+
+### Verification method
+
+The list in `references/foundations/typography.md` was verified on 21 September 2026 against the [google/fonts](https://github.com/google/fonts) repository, which classifies families by directory: `ofl/` for the SIL Open Font License, `apache/` for Apache 2.0, and `ufl/` for the Ubuntu Font License. Each family was confirmed present under `ofl/` with its own `OFL.txt`, and a sample of those files was read to confirm the text is the SIL Open Font License Version 1.1 rather than a directory convention alone.
+
+Twelve families were verified: Cormorant Garamond, Instrument Serif, Newsreader, Fraunces, Hanken Grotesk, Manrope, Figtree, Schibsted Grotesk, Geist, Space Grotesk, IBM Plex Mono, and JetBrains Mono.
+
+Re-verify before adding any family to that list. A font being free to use on a webfont host does not make it OFL.
 
 ## Corrections
 
