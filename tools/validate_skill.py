@@ -22,10 +22,12 @@ fails, and 2 for a usage error.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import re
 import sys
 from pathlib import Path
+from types import ModuleType
 from typing import Dict, List, Optional, Tuple
 
 SKILL_FILENAME = "SKILL.md"
@@ -319,10 +321,125 @@ def check_references(skill_dir: Path, findings: List[Finding]) -> None:
                 )
 
 
+def load_contrast_module(skill_dir: Path) -> Optional[ModuleType]:
+    """Load the skill's own contrast checker, so the WCAG math is not duplicated."""
+    path = skill_dir / "scripts" / "contrast.py"
+    if not path.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("aurelium_contrast", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except Exception:  # noqa: BLE001 - a broken script must not crash the run
+        return None
+    return module
+
+
+def check_contrast_pairs(
+    json_file: Path,
+    data: Dict[str, object],
+    contrast: Optional[ModuleType],
+    findings: List[Finding],
+) -> None:
+    """Every declared contrast pair must meet its threshold."""
+    pairs = data.get("contrast_pairs")
+    if not isinstance(pairs, list) or not pairs:
+        return
+
+    if contrast is None:
+        findings.append(
+            Finding(
+                json_file,
+                "contrast",
+                "contrast pairs are declared but scripts/contrast.py is missing, "
+                "so they cannot be verified",
+            )
+        )
+        return
+
+    colors = data.get("colors")
+    if not isinstance(colors, dict):
+        return
+
+    for index, pair in enumerate(pairs):
+        if not isinstance(pair, dict):
+            findings.append(
+                Finding(json_file, "contrast", "pair {0} is not an object".format(index))
+            )
+            continue
+
+        theme = pair.get("theme")
+        foreground = pair.get("fg")
+        background = pair.get("bg")
+        minimum = pair.get("min", 4.5)
+
+        if theme not in ("light", "dark"):
+            findings.append(
+                Finding(
+                    json_file,
+                    "contrast",
+                    "pair {0} has theme '{1}', expected light or dark".format(
+                        index, theme
+                    ),
+                )
+            )
+            continue
+
+        palette = colors.get(theme)
+        if not isinstance(palette, dict):
+            findings.append(
+                Finding(
+                    json_file, "contrast", "colors.{0} is not an object".format(theme)
+                )
+            )
+            continue
+
+        missing = [
+            name for name in (foreground, background) if name not in palette
+        ]
+        if missing:
+            findings.append(
+                Finding(
+                    json_file,
+                    "contrast",
+                    "pair {0} names undefined colors in {1}: {2}".format(
+                        index, theme, ", ".join(str(name) for name in missing)
+                    ),
+                )
+            )
+            continue
+
+        try:
+            ratio = contrast.contrast_ratio(
+                contrast.parse_color(palette[foreground]),
+                contrast.parse_color(palette[background]),
+            )
+        except Exception as exc:  # noqa: BLE001 - surfaced as a finding
+            findings.append(
+                Finding(json_file, "contrast", "pair {0}: {1}".format(index, exc))
+            )
+            continue
+
+        if ratio < float(minimum):
+            findings.append(
+                Finding(
+                    json_file,
+                    "contrast",
+                    "{0} on {1} in {2} is {3:.2f}:1, below the required {4}:1".format(
+                        foreground, background, theme, ratio, minimum
+                    ),
+                )
+            )
+
+
 def check_direction_tokens(skill_dir: Path, findings: List[Finding]) -> None:
     directions_dir = skill_dir / "assets" / "directions"
     if not directions_dir.is_dir():
         return
+
+    contrast = load_contrast_module(skill_dir)
 
     for json_file in sorted(directions_dir.glob("*.json")):
         if json_file.name.startswith("_"):
@@ -368,6 +485,19 @@ def check_direction_tokens(skill_dir: Path, findings: List[Finding]) -> None:
                             "missing required key '{0}.{1}'".format(key, nested),
                         )
                     )
+
+        if data.get("name") not in (None, json_file.stem):
+            findings.append(
+                Finding(
+                    json_file,
+                    "direction-json",
+                    "name '{0}' must match the filename '{1}'".format(
+                        data.get("name"), json_file.stem
+                    ),
+                )
+            )
+
+        check_contrast_pairs(json_file, data, contrast, findings)
 
 
 def validate_skill(skill_dir: Path, findings: List[Finding]) -> None:

@@ -1,0 +1,216 @@
+{
+  "name": "obsidian",
+  "label": "Obsidian",
+  "mood": "Dark, rich, confident",
+  "colors": {
+    "light": {
+      "page": "#f7f6f4",
+      "surface": "#ffffff",
+      "surface-raised": "#ffffff",
+      "text": "#171614",
+      "text-muted": "#55524c",
+      "border": "#e2e0db",
+      "accent": "#6b5423",
+      "accent-hover": "#54401a",
+      "accent-fg": "#ffffff",
+      "focus": "#6b5423",
+      "success": "#2b6140",
+      "warning": "#7a5310",
+      "danger": "#8f2a22",
+      "info": "#28527c"
+    },
+    "dark": {
+      "page": "#101010",
+      "surface": "#191817",
+      "surface-raised": "#232221",
+      "text": "#f5f3ef",
+      "text-muted": "#a5a19a",
+      "border": "#2c2b29",
+      "accent": "#d8bd7f",
+      "accent-hover": "#e6d09a",
+      "accent-fg": "#101010",
+      "focus": "#d8bd7f",
+      "success": "#6fc48f",
+      "warning": "#dba94f",
+      "danger": "#e58a7e",
+      "info": "#82b6e2"
+    }
+  },
+  "fonts": {
+    "display": "Fraunces",
+    "body": "Manrope",
+    "mono": "JetBrains Mono"
+  },
+  "type": {
+    "base": 16,
+    "ratio": 1.25,
+    "steps": "-2..6"
+  },
+  "spacing": {
+    "base": 4,
+    "multiplier": 1.0
+  },
+  "radii": {
+    "none": "0",
+    "sm": "8px",
+    "md": "10px",
+    "lg": "12px",
+    "pill": "999px"
+  },
+  "shadows": {
+    "e1": "0 1px 2px rgba(0, 0, 0, 0.18)",
+    "e2": "0 2px 6px rgba(0, 0, 0, 0.22), 0 8px 20px rgba(0, 0, 0, 0.20)",
+    "e3": "0 4px 12px rgba(0, 0, 0, 0.26), 0 24px 56px rgba(0, 0, 0, 0.32)"
+  },
+  "borders": {
+    "hairline": "1px",
+    "focus-width": "2px",
+    "focus-offset": "2px"
+  },
+  "motion": {
+    "durations": {
+      "fast": "120ms",
+      "base": "220ms",
+      "slow": "360ms"
+    },
+    "easings": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "exit": "cubic-bezier(0.4, 0, 1, 1)",
+      "entrance": "cubic-bezier(0.05, 0.7, 0.1, 1)"
+    }
+  },
+  "contrast_pairs": [
+    {
+      "fg": "text",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "accent-fg",
+      "bg": "accent",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "accent",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "focus",
+      "bg": "page",
+      "theme": "light",
+      "min": 3.0
+    },
+    {
+      "fg": "success",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "warning",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "danger",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "info",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "accent-fg",
+      "bg": "accent",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "accent",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "focus",
+      "bg": "page",
+      "theme": "dark",
+      "min": 3.0
+    },
+    {
+      "fg": "success",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "warning",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "danger",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "info",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    }
+  ]
+}

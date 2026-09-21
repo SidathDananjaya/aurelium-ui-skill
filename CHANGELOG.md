@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Source attribution for the doctrine material in `CREDITS.md`.
 - Foundations references: color, typography, spacing and layout, surfaces and depth, iconography, imagery, and microcopy.
 - A verified list of twelve SIL Open Font License families, with the verification method recorded in `CREDITS.md`.
+- Five design directions: Quiet Luxury, Obsidian, Tactile Craft, Swiss Precision, and Functional Futurism, each with a JSON token file, a reference document, and both themes.
+- `assets/directions/_schema.md` defining the direction token contract.
+- `references/directions/index.md` with decision tables by archetype and by brand mood.
+- `scripts/contrast.py`, WCAG contrast checking for colour pairs and token files.
+- `scripts/type_scale.py`, modular type scale generation with line height and tracking.
+- `scripts/tokens.py`, turning a direction plus dial values into CSS, JSON, or a Tailwind theme.
+- `tools/build_specimens.py`, rendering swatch and type specimen pages into `gallery/specimens/`.
+- Validator now enforces that every declared contrast pair meets its threshold, and that a direction's name matches its filename.
 
 ### Fixed
 

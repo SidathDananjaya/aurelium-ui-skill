@@ -1,0 +1,216 @@
+{
+  "name": "quiet-luxury",
+  "label": "Quiet Luxury",
+  "mood": "Editorial, calm, warm",
+  "colors": {
+    "light": {
+      "page": "#faf8f3",
+      "surface": "#ffffff",
+      "surface-raised": "#ffffff",
+      "text": "#1c1a15",
+      "text-muted": "#585346",
+      "border": "#e4dfd2",
+      "accent": "#755625",
+      "accent-hover": "#5d4419",
+      "accent-fg": "#ffffff",
+      "focus": "#755625",
+      "success": "#2c6340",
+      "warning": "#7d5310",
+      "danger": "#93291f",
+      "info": "#2a5580"
+    },
+    "dark": {
+      "page": "#15130f",
+      "surface": "#1e1c16",
+      "surface-raised": "#27241c",
+      "text": "#f3f0e7",
+      "text-muted": "#aaa494",
+      "border": "#332f26",
+      "accent": "#cba96b",
+      "accent-hover": "#dcbd85",
+      "accent-fg": "#15130f",
+      "focus": "#cba96b",
+      "success": "#77c795",
+      "warning": "#d9a84e",
+      "danger": "#e4867b",
+      "info": "#84b7e0"
+    }
+  },
+  "fonts": {
+    "display": "Cormorant Garamond",
+    "body": "Hanken Grotesk",
+    "mono": "IBM Plex Mono"
+  },
+  "type": {
+    "base": 17,
+    "ratio": 1.333,
+    "steps": "-2..6"
+  },
+  "spacing": {
+    "base": 4,
+    "multiplier": 1.25
+  },
+  "radii": {
+    "none": "0",
+    "sm": "2px",
+    "md": "4px",
+    "lg": "6px",
+    "pill": "999px"
+  },
+  "shadows": {
+    "e1": "0 1px 2px rgba(28, 26, 21, 0.05)",
+    "e2": "0 2px 6px rgba(28, 26, 21, 0.07), 0 8px 20px rgba(28, 26, 21, 0.06)",
+    "e3": "0 4px 10px rgba(28, 26, 21, 0.09), 0 24px 56px rgba(28, 26, 21, 0.12)"
+  },
+  "borders": {
+    "hairline": "1px",
+    "focus-width": "2px",
+    "focus-offset": "2px"
+  },
+  "motion": {
+    "durations": {
+      "fast": "160ms",
+      "base": "280ms",
+      "slow": "480ms"
+    },
+    "easings": {
+      "standard": "cubic-bezier(0.25, 0, 0.15, 1)",
+      "exit": "cubic-bezier(0.4, 0, 1, 1)",
+      "entrance": "cubic-bezier(0, 0, 0.2, 1)"
+    }
+  },
+  "contrast_pairs": [
+    {
+      "fg": "text",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "accent-fg",
+      "bg": "accent",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "accent",
+      "bg": "surface",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "focus",
+      "bg": "page",
+      "theme": "light",
+      "min": 3.0
+    },
+    {
+      "fg": "success",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "warning",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "danger",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "info",
+      "bg": "page",
+      "theme": "light",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "text-muted",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "accent-fg",
+      "bg": "accent",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "accent",
+      "bg": "surface",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "focus",
+      "bg": "page",
+      "theme": "dark",
+      "min": 3.0
+    },
+    {
+      "fg": "success",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "warning",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "danger",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    },
+    {
+      "fg": "info",
+      "bg": "page",
+      "theme": "dark",
+      "min": 4.5
+    }
+  ]
+}

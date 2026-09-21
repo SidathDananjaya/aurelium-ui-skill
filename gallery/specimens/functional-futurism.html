@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Functional Futurism specimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" />
+<style>
+/* Functional Futurism
+   opulence 6, density 5, motion 6 */
+
+:root {
+  --font-display: "Space Grotesk", Georgia, serif;
+  --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-2xs: 0.694rem;
+  --text-xs: 0.833rem;
+  --text-base: 1.0rem;
+  --text-lg: 1.2rem;
+  --text-xl: 1.44rem;
+  --text-2xl: 1.728rem;
+  --text-3xl: 2.074rem;
+  --text-4xl: 2.488rem;
+  --text-5xl: 2.986rem;
+
+  --leading-2xs: 1.45;
+  --leading-xs: 1.45;
+  --leading-base: 1.55;
+  --leading-lg: 1.55;
+  --leading-xl: 1.25;
+  --leading-2xl: 1.25;
+  --leading-3xl: 1.15;
+  --leading-4xl: 1.05;
+  --leading-5xl: 1.05;
+
+  --tracking-2xs: 0.005em;
+  --tracking-xs: 0.005em;
+  --tracking-base: 0.0em;
+  --tracking-lg: 0.0em;
+  --tracking-xl: -0.01em;
+  --tracking-2xl: -0.015em;
+  --tracking-3xl: -0.015em;
+  --tracking-4xl: -0.025em;
+  --tracking-5xl: -0.03em;
+
+  --space-0: 0.0rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1.0rem;
+  --space-5: 1.25rem;
+  --space-6: 1.75rem;
+  --space-7: 2.25rem;
+  --space-8: 2.5rem;
+  --space-9: 3.5rem;
+  --space-10: 4.5rem;
+  --space-11: 5.25rem;
+  --space-12: 7.0rem;
+  --space-13: 8.75rem;
+
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-pill: 999px;
+
+  --shadow-e1: 0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-e2: 0 2px 6px rgba(0, 0, 0, 0.26), 0 8px 18px rgba(0, 0, 0, 0.22);
+
+  --border-hairline: 1px;
+  --border-focus-width: 2px;
+  --border-focus-offset: 2px;
+
+  --duration-fast: 90ms;
+  --duration-base: 150ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.5, 0, 1, 1);
+
+  /* contrast-pairs: color-text:color-page, color-text:color-surface, color-text-muted:color-page, color-text-muted:color-surface, color-accent-fg:color-accent, color-accent:color-surface, color-focus:color-page, color-success:color-page, color-warning:color-page, color-danger:color-page, color-info:color-page */
+  --color-page: #f4f5f6;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-text: #101214;
+  --color-text-muted: #53585e;
+  --color-border: #dcdfe3;
+  --color-accent: #00636b;
+  --color-accent-hover: #004c52;
+  --color-accent-fg: #ffffff;
+  --color-focus: #00636b;
+  --color-success: #1f6b45;
+  --color-warning: #7a5200;
+  --color-danger: #a52218;
+  --color-info: #12547f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* contrast-pairs: color-text:color-page, color-text:color-surface, color-text-muted:color-page, color-text-muted:color-surface, color-accent-fg:color-accent, color-accent:color-surface, color-focus:color-page, color-success:color-page, color-warning:color-page, color-danger:color-page, color-info:color-page */
+    --color-page: #08090a;
+    --color-surface: #101315;
+    --color-surface-raised: #181c1f;
+    --color-text: #e9edf0;
+    --color-text-muted: #98a1a9;
+    --color-border: #22272b;
+    --color-accent: #35e0d0;
+    --color-accent-hover: #6aeade;
+    --color-accent-fg: #08090a;
+    --color-focus: #35e0d0;
+    --color-success: #4fd18a;
+    --color-warning: #e0b24f;
+    --color-danger: #ff6b5c;
+    --color-info: #6bb6f0;
+  }
+}
+
+[data-theme="dark"] {
+  --color-page: #08090a;
+  --color-surface: #101315;
+  --color-surface-raised: #181c1f;
+  --color-text: #e9edf0;
+  --color-text-muted: #98a1a9;
+  --color-border: #22272b;
+  --color-accent: #35e0d0;
+  --color-accent-hover: #6aeade;
+  --color-accent-fg: #08090a;
+  --color-focus: #35e0d0;
+  --color-success: #4fd18a;
+  --color-warning: #e0b24f;
+  --color-danger: #ff6b5c;
+  --color-info: #6bb6f0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 1ms;
+    --duration-base: 1ms;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-inline-size: 72rem;
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-5) var(--space-11);
+}
+
+header { margin-block-end: var(--space-9); }
+
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-4xl);
+  letter-spacing: var(--tracking-4xl);
+  margin: 0 0 var(--space-2);
+}
+
+.lede { color: var(--color-text-muted); max-inline-size: 60ch; margin: 0; }
+
+h2 {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin: var(--space-9) 0 var(--space-4);
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.swatches {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.swatch { display: grid; gap: var(--space-2); }
+
+.chip {
+  block-size: 4.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.swatch code {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-2xs);
+  color: var(--color-text-muted);
+}
+
+.swatch b { font-weight: 600; font-size: var(--text-xs); }
+
+.type-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.type-row code {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-2xs);
+  color: var(--color-text-muted);
+}
+
+.specimen { margin: 0; overflow-wrap: anywhere; }
+
+.display-face { font-family: var(--font-display); }
+
+.panels {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.panel h3 { margin: 0 0 var(--space-2); font-size: var(--text-base); }
+.panel p { margin: 0; color: var(--color-text-muted); font-size: var(--text-xs); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+
+.btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--text-xs);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-block-size: 44px;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.btn-primary { background: var(--color-accent); color: var(--color-accent-fg); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+table { border-collapse: collapse; inline-size: 100%; font-size: var(--text-xs); }
+th, td { text-align: start; padding: var(--space-3) var(--space-2);
+         border-block-end: 1px solid var(--color-border); }
+th { color: var(--color-text-muted); font-weight: 600; }
+td.num { text-align: end; font-family: var(--font-mono, monospace);
+         font-variant-numeric: tabular-nums lining-nums; }
+
+.meta { display: grid; gap: var(--space-2); font-size: var(--text-xs); margin: 0; }
+.meta div { display: flex; gap: var(--space-3); }
+.meta dt { color: var(--color-text-muted); min-inline-size: 7rem; }
+.meta dd { margin: 0; font-family: var(--font-mono, monospace); }
+
+.toggle {
+  position: fixed;
+  inset-block-start: var(--space-4);
+  inset-inline-end: var(--space-4);
+  z-index: 10;
+}
+
+.pairs { font-size: var(--text-xs); }
+.pairs li { margin-block-end: var(--space-1); }
+.ok { color: var(--color-success); font-weight: 600; }
+
+.nav { display: flex; flex-wrap: wrap; gap: var(--space-3); font-size: var(--text-xs); }
+
+/* Every link takes the accent. Without this the browser default blue lands on
+   a near-black surface in dark mode and fails contrast. */
+a { color: var(--color-accent); text-underline-offset: 0.2em; }
+a:hover { color: var(--color-accent-hover); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 1ms !important; }
+}
+
+</style>
+</head>
+<body>
+<button class="toggle btn btn-secondary" type="button" aria-pressed="false">Dark theme</button>
+<div class="wrap">
+<header>
+  <h1>Functional Futurism</h1>
+  <p class="lede">Precise, technical, cinematic. Every colour pair below is verified against WCAG AA in
+  both themes by the repository validator.</p>
+</header>
+
+<h2>Palette</h2>
+<ul class="swatches">
+<li class="swatch"><div class="chip" style="background: var(--color-page)"></div><b>page</b><code>#f4f5f6</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-surface)"></div><b>surface</b><code>#ffffff</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-surface-raised)"></div><b>surface-raised</b><code>#ffffff</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-border)"></div><b>border</b><code>#dcdfe3</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-text)"></div><b>text</b><code>#101214</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-text-muted)"></div><b>text-muted</b><code>#53585e</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-accent)"></div><b>accent</b><code>#00636b</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-accent-hover)"></div><b>accent-hover</b><code>#004c52</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-accent-fg)"></div><b>accent-fg</b><code>#ffffff</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-focus)"></div><b>focus</b><code>#00636b</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-success)"></div><b>success</b><code>#1f6b45</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-warning)"></div><b>warning</b><code>#7a5200</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-danger)"></div><b>danger</b><code>#a52218</code></li>
+<li class="swatch"><div class="chip" style="background: var(--color-info)"></div><b>info</b><code>#12547f</code></li>
+</ul>
+
+<h2>Type scale</h2>
+<div class="type-row"><code>5xl</code><p class="specimen display-face" style="font-size: var(--text-5xl); line-height: var(--leading-5xl); letter-spacing: var(--tracking-5xl)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>4xl</code><p class="specimen display-face" style="font-size: var(--text-4xl); line-height: var(--leading-4xl); letter-spacing: var(--tracking-4xl)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>3xl</code><p class="specimen display-face" style="font-size: var(--text-3xl); line-height: var(--leading-3xl); letter-spacing: var(--tracking-3xl)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>2xl</code><p class="specimen" style="font-size: var(--text-2xl); line-height: var(--leading-2xl); letter-spacing: var(--tracking-2xl)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>xl</code><p class="specimen" style="font-size: var(--text-xl); line-height: var(--leading-xl); letter-spacing: var(--tracking-xl)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>lg</code><p class="specimen" style="font-size: var(--text-lg); line-height: var(--leading-lg); letter-spacing: var(--tracking-lg)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>base</code><p class="specimen" style="font-size: var(--text-base); line-height: var(--leading-base); letter-spacing: var(--tracking-base)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>xs</code><p class="specimen" style="font-size: var(--text-xs); line-height: var(--leading-xs); letter-spacing: var(--tracking-xs)">The quiet confidence of a considered interface</p></div>
+<div class="type-row"><code>2xs</code><p class="specimen" style="font-size: var(--text-2xs); line-height: var(--leading-2xs); letter-spacing: var(--tracking-2xs)">The quiet confidence of a considered interface</p></div>
+
+<h2>Surfaces and controls</h2>
+<div class="panels">
+  <div class="panel">
+    <h3>Raised surface</h3>
+    <p>A panel sitting on the page, separated by a hairline.</p>
+  </div>
+  <div class="panel" style="box-shadow: var(--shadow-e2)">
+    <h3>Overlay</h3>
+    <p>The elevation used for popovers and dropdowns.</p>
+  </div>
+  <div class="panel">
+    <h3>Actions</h3>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button">Primary</button>
+      <button class="btn btn-secondary" type="button">Secondary</button>
+    </div>
+  </div>
+</div>
+
+<h2>Tabular figures</h2>
+<table>
+  <thead><tr><th>Account</th><th>Reference</th><th class="num">Amount</th></tr></thead>
+  <tbody>
+    <tr><td>Operating</td><td>INV-2291</td><td class="num">12,480.00</td></tr>
+    <tr><td>Reserve</td><td>INV-2292</td><td class="num">1,118.50</td></tr>
+    <tr><td>Payroll</td><td>INV-2293</td><td class="num">96,204.75</td></tr>
+  </tbody>
+</table>
+
+<h2>Tokens</h2>
+<dl class="meta">
+<div><dt>Display</dt><dd>Space Grotesk</dd></div>
+<div><dt>Body</dt><dd>Space Grotesk</dd></div>
+<div><dt>Mono</dt><dd>JetBrains Mono</dd></div>
+<div><dt>Type base</dt><dd>15px</dd></div>
+<div><dt>Type ratio</dt><dd>1.2</dd></div>
+<div><dt>Spacing base</dt><dd>4px</dd></div>
+<div><dt>Radius md</dt><dd>2px</dd></div>
+<div><dt>Duration base</dt><dd>150ms</dd></div>
+<div><dt>Ease standard</dt><dd>cubic-bezier(0.2, 0, 0, 1)</dd></div>
+</dl>
+
+<h2>Verified contrast</h2>
+<ul class="pairs">
+<li>text on page <em>(light)</em> <span class="ok">17.20:1</span> needs 4.5:1</li>
+<li>text on surface <em>(light)</em> <span class="ok">18.77:1</span> needs 4.5:1</li>
+<li>text-muted on page <em>(light)</em> <span class="ok">6.58:1</span> needs 4.5:1</li>
+<li>text-muted on surface <em>(light)</em> <span class="ok">7.18:1</span> needs 4.5:1</li>
+<li>accent-fg on accent <em>(light)</em> <span class="ok">7.01:1</span> needs 4.5:1</li>
+<li>accent on surface <em>(light)</em> <span class="ok">7.01:1</span> needs 4.5:1</li>
+<li>focus on page <em>(light)</em> <span class="ok">6.42:1</span> needs 3.0:1</li>
+<li>success on page <em>(light)</em> <span class="ok">5.92:1</span> needs 4.5:1</li>
+<li>warning on page <em>(light)</em> <span class="ok">6.34:1</span> needs 4.5:1</li>
+<li>danger on page <em>(light)</em> <span class="ok">6.77:1</span> needs 4.5:1</li>
+<li>info on page <em>(light)</em> <span class="ok">7.40:1</span> needs 4.5:1</li>
+<li>text on page <em>(dark)</em> <span class="ok">16.93:1</span> needs 4.5:1</li>
+<li>text on surface <em>(dark)</em> <span class="ok">15.84:1</span> needs 4.5:1</li>
+<li>text-muted on page <em>(dark)</em> <span class="ok">7.60:1</span> needs 4.5:1</li>
+<li>text-muted on surface <em>(dark)</em> <span class="ok">7.11:1</span> needs 4.5:1</li>
+<li>accent-fg on accent <em>(dark)</em> <span class="ok">12.08:1</span> needs 4.5:1</li>
+<li>accent on surface <em>(dark)</em> <span class="ok">11.30:1</span> needs 4.5:1</li>
+<li>focus on page <em>(dark)</em> <span class="ok">12.08:1</span> needs 3.0:1</li>
+<li>success on page <em>(dark)</em> <span class="ok">10.27:1</span> needs 4.5:1</li>
+<li>warning on page <em>(dark)</em> <span class="ok">10.11:1</span> needs 4.5:1</li>
+<li>danger on page <em>(dark)</em> <span class="ok">7.13:1</span> needs 4.5:1</li>
+<li>info on page <em>(dark)</em> <span class="ok">9.09:1</span> needs 4.5:1</li>
+</ul>
+
+<h2>Other directions</h2>
+<p class="nav"><a href="index.html">All specimens</a> <a href="obsidian.html">obsidian</a> <a href="quiet-luxury.html">quiet-luxury</a> <a href="swiss-precision.html">swiss-precision</a> <a href="tactile-craft.html">tactile-craft</a></p>
+</div>
+<script>
+
+(function () {
+  var key = "aurelium-specimen-theme";
+  var button = document.querySelector(".toggle");
+  function apply(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    button.textContent = theme === "dark" ? "Light theme" : "Dark theme";
+    button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  }
+  var stored = null;
+  try { stored = localStorage.getItem(key); } catch (error) { stored = null; }
+  var initial = stored || (window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  apply(initial);
+  button.addEventListener("click", function () {
+    var next = document.documentElement.getAttribute("data-theme") === "dark"
+      ? "light" : "dark";
+    apply(next);
+    try { localStorage.setItem(key, next); } catch (error) { /* private mode */ }
+  });
+})();
+
+</script>
+</body>
+</html>
