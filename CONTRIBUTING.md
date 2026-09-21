@@ -43,6 +43,19 @@ On macOS and Linux, use `python3` instead of `python`.
 - CI must be green before merge: unit tests and the skill validator both pass.
 - Merge with a merge commit rather than a squash, so each Conventional Commit is preserved in history.
 
+## Agent Skills spec constraints
+
+`tools/validate_skill.py` enforces these in CI, but knowing them saves a round trip.
+
+- A skill is a folder containing `SKILL.md`, plus optional `scripts/`, `references/`, and `assets/`. The file must be named exactly `SKILL.md`.
+- `SKILL.md` opens with YAML frontmatter, then Markdown instructions.
+- `name` is required: 1 to 64 characters, lowercase letters, digits and single hyphens only, no leading or trailing hyphen, no consecutive hyphens. **It must match the folder name.**
+- `description` is required, 1 to 1024 characters, and must state what the skill does **and when to use it**. This field controls whether the skill activates, so it needs concrete trigger words.
+- Optional keys are `license`, `compatibility` (max 500 characters), and `metadata`. Any other top-level key is rejected.
+- **No angle brackets** (`<` or `>`) anywhere in the frontmatter.
+- Frontmatter supports flat `key: value` pairs and one level of nesting under `metadata`. Lists and block scalars are rejected rather than guessed at.
+- The whole of `SKILL.md` loads when the skill activates, which is why it stays under 500 lines. Reference files load on demand, so keep each one focused.
+
 ## Adding a design direction
 
 A direction is a complete, coherent system, not a color swap. It needs:

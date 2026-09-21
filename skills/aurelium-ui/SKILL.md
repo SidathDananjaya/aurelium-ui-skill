@@ -126,9 +126,18 @@ Load on demand. Do not read everything up front.
 | Optimistic UI, progress, undo over confirm | `references/patterns/feedback.md` |
 | Search, filters, applied-filter chips, URL state | `references/patterns/search-filter.md` |
 | Time to first value, multi-step flows, checklists | `references/patterns/onboarding.md` |
+| Choosing an archetype from the request | `references/archetypes/index.md` |
+| Hero, proof, pricing, post-conversion | `references/archetypes/landing.md` |
+| First-load overview, drill-down, stale data | `references/archetypes/dashboard.md` |
+| Explore screens, query state, trust in numbers | `references/archetypes/analytics.md` |
+| Product detail, cart, checkout, confirmation | `references/archetypes/ecommerce.md` |
+| Availability, holds, confirmation, changes | `references/archetypes/booking.md` |
+| Balances, transactions, transfers, trust | `references/archetypes/fintech.md` |
+| Dense lists, keyboard flow, bulk actions | `references/archetypes/admin.md` |
+| Sign up, sign in, verification, recovery | `references/archetypes/auth-onboarding.md` |
 
-Archetypes, motion recipes, quality gates, and stack recipes are being added in
-later releases. Until they land, work from the references above.
+Motion recipes, quality gates, and stack recipes are being added in later
+releases. Until they land, work from the references above.
 
 ## Output contract
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `CLAUDE.md` is no longer tracked. It is a local development file, and the Agent Skills spec constraints it carried have moved into `CONTRIBUTING.md` so contributors still have them.
+
 ### Added
 
 - Repository structure, license, contributing guide, credits, and agent instructions.
@@ -35,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pattern references: states, feedback, search and filter, and onboarding.
 - `tests/test_reference_snippets.py`, checking every guidance snippet uses tokens rather than hard-coded colour, spacing, radius, or duration.
 - Reference map in `SKILL.md` now covers all twelve component and pattern files.
+- Archetype references: marketing and landing, SaaS dashboard, analytics, e-commerce, booking, fintech, admin, and auth and onboarding, plus an index mapping request phrases to archetypes.
+- Archetype tests enforcing the eight-section template, the 200 line limit, dial ranges, and cross-references to component and pattern files.
 
 ### Fixed
 
