@@ -28,8 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/tokens.py`, turning a direction plus dial values into CSS, JSON, or a Tailwind theme.
 - `tools/build_specimens.py`, rendering swatch and type specimen pages into `gallery/specimens/`.
 - Validator now enforces that every declared contrast pair meets its threshold, and that a direction's name matches its filename.
+- `SKILL.md` router: mode detection, the ten non-negotiable laws, the complete-states rule, dials, direction summary, reference map, and the output contract.
+- `workflows/create.md` and `workflows/audit.md`.
+- `tests/test_skill_structure.py` guarding the router's frontmatter, sections, reference map, and house style.
 
 ### Fixed
+
+- `contrast.py` checked a stylesheet carrying two palettes against whichever theme appeared last, twice, and never checked the other. Pairs are now resolved against their own rule block, so a light and dark file is checked once per theme.
 
 - The validator line count test no longer rewrites a tracked fixture, which corrupted its line endings on Windows. It now builds its sample in a temporary directory, and a new test guards against the regression.
 
