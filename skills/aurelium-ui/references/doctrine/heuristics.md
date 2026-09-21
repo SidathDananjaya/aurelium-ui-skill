@@ -97,7 +97,7 @@ explanation is adjacent to it, not one click away.
 ## Using these in an audit
 
 Score each heuristic pass or fail, then record the failures as findings under
-these severity levels:
+the severity levels in `../quality/rubric.md`:
 
 - A failure that blocks the task or excludes a user is **Critical**.
 - A failure that measurably slows or confuses is **Important**.

@@ -115,38 +115,28 @@ Add motion to the level the MOTION dial sets, and no more.
 
 ## 9. Detail pass
 
-Walk this before you consider the work finished:
+Walk `../references/quality/detail-checklist.md`. It covers the craft items
+grouped by typography, spacing, colour, interaction, content, responsive, and
+imagery.
 
-- Optical alignment corrected where maths and eye disagree.
-- `font-variant-numeric: tabular-nums` on every figure that changes or aligns.
-- `text-wrap: balance` on headings, `pretty` on paragraphs.
-- Focus visible on every interactive element, never removed.
-- Hover, active, and disabled states designed, not defaults.
-- No orphaned words in headings, no clipped text at any breakpoint.
-- Microcopy: buttons are verbs, errors name a fix, no exclamation marks.
-- Realistic content. Never lorem ipsum, never obviously fake data.
+Then walk `../references/quality/anti-patterns.md` and confirm none apply.
 
 ## 10. Pre-flight
 
-Run the contrast check on the token set:
+Walk `../references/quality/preflight.md` in full. It is the authoritative gate
+and it is not summarised here, so that there is one list to keep correct.
+
+Start with the contrast check, since it is the only one that is fully
+automated:
 
 ```
 python scripts/contrast.py --tokens tokens.css
 ```
 
-Then confirm, by actually checking rather than assuming:
+Record `pass`, `fail`, or `n/a` with a reason for every item. Fix every failure
+before reporting. Anything that cannot be fixed is reported as a known gap.
 
-1. Every contrast pair passes AA.
-2. Exactly one primary action per view.
-3. Every state from step 7 exists.
-4. Tab through each screen: focus always visible, order matches the visual
-   order, `Esc` closes overlays.
-5. Smallest interactive target is at least 24 by 24, primaries at least 44.
-6. Reduced motion still communicates every state change.
-7. Renders at 375, 768, 1024, and 1440 with no horizontal scroll.
-8. Reflows at 320px and at 200 percent zoom.
-9. No console errors.
-10. Every image has reserved dimensions.
+**Never claim a check passed unless you ran it.**
 
 ## 11. Report
 
