@@ -16,7 +16,8 @@ REFERENCES = SKILL / "references"
 COMPONENT_FILES = sorted((REFERENCES / "components").glob("*.md"))
 PATTERN_FILES = sorted((REFERENCES / "patterns").glob("*.md"))
 MOTION_FILES = sorted((REFERENCES / "motion").glob("*.md"))
-GUIDANCE_FILES = COMPONENT_FILES + PATTERN_FILES + MOTION_FILES
+STACK_FILES = sorted((REFERENCES / "stacks").glob("*.md"))
+GUIDANCE_FILES = COMPONENT_FILES + PATTERN_FILES + MOTION_FILES + STACK_FILES
 
 FENCE = re.compile(r"```(\w+)?\n(.*?)```", re.DOTALL)
 HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
@@ -145,7 +146,7 @@ class CoverageTests(unittest.TestCase):
 
     def test_every_file_ends_with_an_anti_patterns_table(self):
         # Motion keeps its anti-patterns in quality/anti-patterns.md instead.
-        for path in COMPONENT_FILES + PATTERN_FILES:
+        for path in COMPONENT_FILES + PATTERN_FILES + STACK_FILES:
             text = path.read_text(encoding="utf-8")
             self.assertIn("## Anti-patterns", text, path.name)
 
@@ -179,6 +180,94 @@ class CoverageTests(unittest.TestCase):
             self.assertLess(
                 lines, limit, "{0} is {1} lines, limit {2}".format(path.name, lines, limit)
             )
+
+
+class StackTests(unittest.TestCase):
+    """Every stack must map to the generated tokens rather than fork them."""
+
+    EXPECTED = {"html-css", "tailwind", "react", "nextjs"}
+
+    def test_all_four_stacks_ship(self):
+        self.assertEqual({p.stem for p in STACK_FILES}, self.EXPECTED)
+
+    def test_each_points_at_the_token_generator(self):
+        for path in STACK_FILES:
+            text = path.read_text(encoding="utf-8")
+            self.assertTrue(
+                "tokens.py" in text or "tokens.css" in text,
+                "{0} does not reference the generated tokens".format(path.name),
+            )
+
+    def test_tailwind_recipe_requires_the_inline_theme_directive(self):
+        # Without "inline" the values bake in and theme switching dies.
+        text = (REFERENCES / "stacks" / "tailwind.md").read_text(encoding="utf-8")
+        self.assertIn("@theme inline", text)
+        self.assertIn("au-", text)
+
+    def test_tailwind_recipe_matches_what_the_generator_emits(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "tokens_for_stacks", SKILL / "scripts" / "tokens.py"
+        )
+        tokens = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tokens)
+
+        direction = tokens.load_direction(
+            "obsidian", SKILL / "assets" / "directions"
+        )
+        emitted = tokens.format_tailwind(
+            tokens.build_tokens(direction, 4, 5, 4), "auto"
+        )
+        # The recipe teaches these exact shapes, so they must be real.
+        self.assertIn("@theme inline", emitted)
+        self.assertIn("--color-page: var(--au-color-page);", emitted)
+        self.assertNotIn("module.exports", emitted)
+
+    def test_each_warns_against_forking_the_system(self):
+        # A stack either states the regenerate rule itself, or defers to the
+        # stack file that does. nextjs.md builds on react.md by design.
+        for path in STACK_FILES:
+            text = flat_text(path)
+            defers = any(
+                "{0}.md".format(other) in text
+                for other in self.EXPECTED
+                if other != path.stem
+            )
+            self.assertTrue(
+                "regenerate" in text or defers,
+                "{0} neither states the regenerate rule nor defers".format(path.name),
+            )
+
+    def test_the_stacks_that_define_token_handling_state_the_rule(self):
+        for name in ("html-css", "tailwind", "react"):
+            text = flat_text(REFERENCES / "stacks" / "{0}.md".format(name))
+            self.assertIn("regenerate", text, name)
+
+    def test_no_stack_recommends_hand_editing_tokens(self):
+        for path in STACK_FILES:
+            text = flat_text(path)
+            if "hand-edit" in text or "hand edit" in text:
+                self.assertTrue(
+                    "never" in text or "anti-pattern" in text,
+                    "{0} mentions hand editing without forbidding it".format(path.name),
+                )
+
+    def test_react_and_nextjs_cover_state_rendering(self):
+        text = flat_text(REFERENCES / "stacks" / "react.md")
+        for topic in ("key", "focus", "states"):
+            self.assertIn(topic, text, topic)
+
+    def test_nextjs_covers_fonts_metadata_and_images(self):
+        text = flat_text(REFERENCES / "stacks" / "nextjs.md")
+        for topic in ("next/font", "metadatabase", "next/image", "priority"):
+            self.assertIn(topic, text, topic)
+
+    def test_every_stack_is_in_the_reference_map(self):
+        skill_md = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        for path in STACK_FILES:
+            relative = path.relative_to(SKILL).as_posix()
+            self.assertIn(relative, skill_md, "{0} missing from reference map".format(relative))
 
 
 class MotionTests(unittest.TestCase):

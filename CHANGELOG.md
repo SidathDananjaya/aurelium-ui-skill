@@ -51,9 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `quality/anti-patterns.md` completed: 22 visual, 30 UX, 23 motion, and 20 copy entries.
 - `assets/templates/DESIGN.md`, the design system template persisted into user projects.
 - `tests/test_quality_layer.py`, guarding the gate's structure and the one-source-per-rule rule.
+- Stack recipes: `html-css.md` (the default), `tailwind.md`, `react.md`, and `nextjs.md`, each mapping to the generated tokens rather than forking them.
+- Stack tests asserting every recipe points at the token generator and that the Tailwind recipe matches what the generator actually emits.
 
 ### Changed
 
+- `tokens.py --format tailwind` now emits Tailwind v4 CSS using `@theme inline` instead of a v3 JavaScript config. Raw tokens move under an `au-` namespace so Tailwind's own namespaces stay free, and the contrast pairs comment follows the same prefix so the check still runs.
 - The create and audit workflows now point at `preflight.md`, `detail-checklist.md`, and `rubric.md` rather than restating them, so each rule has one source.
 - Restored the last two Phase 2 cross-links: `heuristics.md` to `quality/rubric.md` and `luxury-principles.md` to `quality/preflight.md`. The reference map debt is now clear.
 
