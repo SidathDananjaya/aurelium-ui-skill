@@ -135,8 +135,11 @@ Load on demand. Do not read everything up front.
 | Balances, transactions, transfers, trust | `references/archetypes/fintech.md` |
 | Dense lists, keyboard flow, bulk actions | `references/archetypes/admin.md` |
 | Sign up, sign in, verification, recovery | `references/archetypes/auth-onboarding.md` |
+| Purpose test, durations, easing, reduced motion | `references/motion/principles.md` |
+| Press, hover, overlays, lists, page transitions | `references/motion/recipes.md` |
+| What not to do, and what to do instead | `references/quality/anti-patterns.md` |
 
-Motion recipes, quality gates, and stack recipes are being added in later
+The remaining quality gates and the stack recipes are being added in later
 releases. Until they land, work from the references above.
 
 ## Output contract
