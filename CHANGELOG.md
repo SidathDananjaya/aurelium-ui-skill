@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI running the test suite and the validator on Python 3.9 and 3.13.
 - Doctrine references: the ten luxury principles, fourteen UX laws, Nielsen's ten heuristics restated as binary checks, the WCAG 2.2 AA accessibility baseline, and the Core Web Vitals performance budget.
 - Source attribution for the doctrine material in `CREDITS.md`.
+- Foundations references: color, typography, spacing and layout, surfaces and depth, iconography, imagery, and microcopy.
+- A verified list of twelve SIL Open Font License families, with the verification method recorded in `CREDITS.md`.
 
 ### Fixed
 
