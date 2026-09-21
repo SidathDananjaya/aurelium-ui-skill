@@ -3,6 +3,7 @@
 import importlib.util
 import io
 import json
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -175,16 +176,33 @@ class DiscoveryTests(unittest.TestCase):
 
 class LineCountTests(unittest.TestCase):
     def test_long_skill_file_fails(self):
-        findings = []
-        long_file = FIXTURES / "valid-skill" / "SKILL.md"
-        original = long_file.read_text(encoding="utf-8")
-        padded = original + "\nfiller\n" * validator.MAX_SKILL_LINES
-        try:
-            long_file.write_text(padded, encoding="utf-8")
-            validator.check_frontmatter(long_file, "valid-skill", findings)
-        finally:
-            long_file.write_text(original, encoding="utf-8")
+        # Built in a temporary directory so the run never mutates a tracked
+        # fixture. newline is pinned because Path.write_text cannot set it
+        # until Python 3.10, and the default rewrites "\n" as CRLF on Windows.
+        with tempfile.TemporaryDirectory() as tmp:
+            skill_dir = Path(tmp) / "long-skill"
+            skill_dir.mkdir()
+            skill_md = skill_dir / "SKILL.md"
+            body = (
+                "---\n"
+                "name: long-skill\n"
+                "description: Padded well past the maximum line count.\n"
+                "---\n"
+            ) + "filler\n" * validator.MAX_SKILL_LINES
+            with open(skill_md, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write(body)
+
+            findings = []
+            validator.check_frontmatter(skill_md, "long-skill", findings)
+
         self.assertTrue(any(finding.check == "line-count" for finding in findings))
+
+    def test_running_the_suite_leaves_fixtures_untouched(self):
+        # Guards against a repeat of the mutation bug above.
+        fixture_file = FIXTURES / "valid-skill" / "SKILL.md"
+        before = fixture_file.read_bytes()
+        run(fixture("valid-skill"))
+        self.assertEqual(fixture_file.read_bytes(), before)
 
     def test_repository_skill_is_within_the_limit(self):
         skill_md = REPO_ROOT / "skills" / "aurelium-ui" / "SKILL.md"

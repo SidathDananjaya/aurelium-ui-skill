@@ -16,9 +16,11 @@ Listing a source here is attribution, not a claim of endorsement, affiliation, o
 
 | Source | Used for |
 |---|---|
-| Jakob Nielsen, "10 Usability Heuristics for User Interface Design", Nielsen Norman Group | The heuristics encoded in `references/doctrine/heuristics.md` |
-| Fitts's law, Hick's law, Miller's law, Tesler's law, Doherty threshold, Von Restorff effect, serial position effect, peak-end rule, aesthetic-usability effect | The application rules in `references/doctrine/ux-laws.md` |
-| Gestalt principles of grouping (proximity, similarity, common region) | Spacing and grouping rules in `references/foundations/spacing-layout.md` |
+| Jakob Nielsen, "10 Usability Heuristics for User Interface Design", Nielsen Norman Group | The heuristics encoded in `references/doctrine/heuristics.md`. Each is restated as one implementable rule and one binary check |
+| Fitts's law, Hick's law, Jakob's law, Miller's law, Tesler's law, Doherty threshold, Von Restorff effect, serial position effect, peak-end rule, aesthetic-usability effect | The application rules in `references/doctrine/ux-laws.md` |
+| Jon Postel, the robustness principle, from RFC 761 and RFC 1122 | Applied to form input handling in `references/doctrine/ux-laws.md`. The original concerns network protocol implementations, not user interfaces. The application to input parsing is ours |
+| Gestalt principles of grouping (proximity, similarity, common region) | Grouping and spacing rules in `references/doctrine/ux-laws.md` and the foundations |
+| Daniel Kahneman and Barbara Fredrickson, research on the peak-end rule | The rule that flows invest at their peak and their ending |
 
 ## Typography and color
 
