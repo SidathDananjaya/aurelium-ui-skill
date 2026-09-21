@@ -142,9 +142,13 @@ Load on demand. Do not read everything up front.
 | Scoring an interface, craft checklist | `references/quality/rubric.md` |
 | The craft pass, grouped by area | `references/quality/detail-checklist.md` |
 | Template persisted into the user's project | `assets/templates/DESIGN.md` |
+| The default stack: structure, classes, theming | `references/stacks/html-css.md` |
+| Theme layer, no arbitrary values | `references/stacks/tailwind.md` |
+| Components, variants, state rendering | `references/stacks/react.md` |
+| Font loading, metadata, images | `references/stacks/nextjs.md` |
 
-Stack recipes for Tailwind, React, and Next.js are being added in a later
-release. Until they land, default to HTML and CSS with the tokens above.
+Default to HTML and CSS unless the project already uses a framework or the user
+asks for one.
 
 ## Output contract
 

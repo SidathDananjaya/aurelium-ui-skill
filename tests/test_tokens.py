@@ -203,10 +203,46 @@ class CssOutputTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(payload["direction"], "quiet-luxury")
 
-    def test_tailwind_output_mentions_custom_properties(self):
+    def test_tailwind_output_uses_the_v4_theme_directive(self):
         code, out, _ = run(tokens, "--direction", "obsidian", "--format", "tailwind")
         self.assertEqual(code, 0)
-        self.assertIn("var(--color-page)", out)
+        # Tailwind v4 is CSS first. A JavaScript config would be the v3 shape.
+        self.assertIn("@theme inline", out)
+        self.assertNotIn("module.exports", out)
+
+    def test_tailwind_theme_layer_references_rather_than_copies(self):
+        # Without "inline" Tailwind copies the value and freezes the light
+        # palette, so theme switching silently stops working.
+        _, out, _ = run(tokens, "--direction", "obsidian", "--format", "tailwind")
+        layer = out.split("@theme inline", 1)[1]
+        self.assertIn("--color-page: var(--au-color-page);", layer)
+        self.assertIn("--spacing-4: var(--au-space-4);", layer)
+        self.assertIn("--radius-md: var(--au-radius-md);", layer)
+
+    def test_tailwind_raw_tokens_are_namespaced(self):
+        # The au- prefix keeps Tailwind's own --color-* namespace free.
+        _, out, _ = run(tokens, "--direction", "obsidian", "--format", "tailwind")
+        root = out.split("@theme inline", 1)[0]
+        self.assertIn("--au-color-page:", root)
+        self.assertNotIn("\n  --color-page:", root)
+
+    def test_tailwind_output_still_carries_both_themes(self):
+        _, out, _ = run(tokens, "--direction", "obsidian", "--format", "tailwind")
+        self.assertIn("prefers-color-scheme: dark", out)
+        self.assertIn('[data-theme="dark"]', out)
+
+    def test_tailwind_output_passes_its_own_contrast_check(self):
+        for name in DIRECTION_NAMES:
+            _, out, _ = run(tokens, "--direction", name, "--format", "tailwind")
+            results = contrast.check_tokens(out, contrast.AA_NORMAL)
+            self.assertTrue(results, "{0} declared no pairs".format(name))
+            for result in results:
+                self.assertTrue(result.passed, "{0}: {1}".format(name, result))
+
+    def test_css_format_is_unaffected_by_the_prefix_change(self):
+        _, out, _ = run(tokens, "--direction", "obsidian", "--format", "css")
+        self.assertIn("--color-page:", out)
+        self.assertNotIn("--au-", out)
 
     def test_list_prints_every_direction(self):
         code, out, _ = run(tokens, "--list")
