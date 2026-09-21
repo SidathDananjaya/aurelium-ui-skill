@@ -114,10 +114,21 @@ Load on demand. Do not read everything up front.
 | Voice, buttons, errors, empty states | `references/foundations/microcopy.md` |
 | Choosing a direction | `references/directions/index.md` |
 | The direction token contract | `assets/directions/_schema.md` |
+| Hierarchy, sizes, loading, icon buttons | `references/components/buttons.md` |
+| Labels, validation timing, errors, multi-step | `references/components/forms.md` |
+| Top bar, sidebar, tabs, breadcrumbs, mobile | `references/components/navigation.md` |
+| When a card earns its place, grids, clamping | `references/components/cards-lists.md` |
+| Density, sticky headers, sorting, bulk actions | `references/components/tables.md` |
+| Modals, drawers, popovers, toasts, focus | `references/components/overlays.md` |
+| KPIs, choosing a chart, chart accessibility | `references/components/data-display.md` |
+| Galleries, carousels, product imagery, video | `references/components/media.md` |
+| The complete-states rule, state by state | `references/patterns/states.md` |
+| Optimistic UI, progress, undo over confirm | `references/patterns/feedback.md` |
+| Search, filters, applied-filter chips, URL state | `references/patterns/search-filter.md` |
+| Time to first value, multi-step flows, checklists | `references/patterns/onboarding.md` |
 
-Components, patterns, archetypes, motion recipes, quality gates, and stack
-recipes are being added in later releases. Until they land, work from the
-doctrine and foundations above.
+Archetypes, motion recipes, quality gates, and stack recipes are being added in
+later releases. Until they land, work from the references above.
 
 ## Output contract
 

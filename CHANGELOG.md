@@ -31,9 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SKILL.md` router: mode detection, the ten non-negotiable laws, the complete-states rule, dials, direction summary, reference map, and the output contract.
 - `workflows/create.md` and `workflows/audit.md`.
 - `tests/test_skill_structure.py` guarding the router's frontmatter, sections, reference map, and house style.
+- Component references: buttons, forms, navigation, cards and lists, tables, overlays, data display, and media.
+- Pattern references: states, feedback, search and filter, and onboarding.
+- `tests/test_reference_snippets.py`, checking every guidance snippet uses tokens rather than hard-coded colour, spacing, radius, or duration.
+- Reference map in `SKILL.md` now covers all twelve component and pattern files.
 
 ### Fixed
 
+- Restored the cross-links in `luxury-principles.md` and `accessibility.md` that were written as prose in Phase 2 because their targets did not yet exist.
 - `contrast.py` checked a stylesheet carrying two palettes against whichever theme appeared last, twice, and never checked the other. Pairs are now resolved against their own rule block, so a light and dark file is checked once per theme.
 
 - The validator line count test no longer rewrites a tracked fixture, which corrupted its line endings on Windows. It now builds its sample in a temporary directory, and a new test guards against the regression.

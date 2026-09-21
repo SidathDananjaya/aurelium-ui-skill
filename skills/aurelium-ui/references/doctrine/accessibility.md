@@ -12,8 +12,8 @@ verifiable. Nothing ships that fails one.
 | UI component boundaries and meaningful graphics | 3:1 |
 | Focus indicator against the adjacent background | 3:1 |
 
-**Check.** Run a contrast checker over every declared foreground and background
-pair in the token set. Every pair passes. Disabled controls are exempt from the
+**Check.** Run `../../scripts/contrast.py` over every declared foreground and
+background pair in the token set. Every pair passes. Disabled controls are exempt from the
 text minimum, but never rely on a disabled state to convey information.
 
 Never use color alone to carry meaning. Pair every semantic color with an icon,
