@@ -209,6 +209,85 @@ class CssTokenTests(unittest.TestCase):
             contrast.parse_declared_pairs("/* contrast-pairs: textpage */")
 
 
+class ThemeScopingTests(unittest.TestCase):
+    """A file carrying two palettes must be checked once per palette.
+
+    Flattening every declaration into one map silently checks whichever theme
+    appears last, twice, and never checks the other one at all.
+    """
+
+    TWO_THEMES = """
+    :root {
+      /* contrast-pairs: color-text:color-page */
+      --color-page: #ffffff;
+      --color-text: #111111;
+    }
+
+    [data-theme="dark"] {
+      /* contrast-pairs: color-text:color-page */
+      --color-page: #101010;
+      --color-text: #f5f5f5;
+    }
+    """
+
+    def test_both_themes_are_checked_separately(self):
+        results = contrast.check_tokens(self.TWO_THEMES, contrast.AA_NORMAL)
+        self.assertEqual(len(results), 2)
+        ratios = sorted(round(result.ratio, 2) for result in results)
+        # Distinct values prove each comment used its own block's palette.
+        self.assertNotEqual(ratios[0], ratios[1])
+        self.assertTrue(all(result.passed for result in results))
+
+    def test_a_failure_in_the_first_theme_is_not_masked(self):
+        css = self.TWO_THEMES.replace("--color-text: #111111;", "--color-text: #cccccc;")
+        results = contrast.check_tokens(css, contrast.AA_NORMAL)
+        self.assertFalse(results[0].passed)
+        self.assertTrue(results[1].passed)
+
+    def test_a_failure_in_the_second_theme_is_not_masked(self):
+        css = self.TWO_THEMES.replace("--color-text: #f5f5f5;", "--color-text: #333333;")
+        results = contrast.check_tokens(css, contrast.AA_NORMAL)
+        self.assertTrue(results[0].passed)
+        self.assertFalse(results[1].passed)
+
+    def test_nested_media_query_block_is_scoped_correctly(self):
+        css = """
+        :root {
+          /* contrast-pairs: color-text:color-page */
+          --color-page: #ffffff;
+          --color-text: #111111;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :root:not([data-theme="light"]) {
+            /* contrast-pairs: color-text:color-page */
+            --color-page: #101010;
+            --color-text: #cccccc;
+          }
+        }
+        """
+        results = contrast.check_tokens(css, contrast.AA_NORMAL)
+        self.assertEqual(len(results), 2)
+        self.assertAlmostEqual(results[0].ratio, 18.88, places=1)
+        self.assertAlmostEqual(results[1].ratio, 11.85, places=1)
+
+    def test_block_local_value_wins_over_the_global_one(self):
+        properties_global = contrast.parse_custom_properties(self.TWO_THEMES)
+        # Flattened, the dark value wins, which is exactly the bug being guarded.
+        self.assertEqual(properties_global["color-page"], "#101010")
+
+    def test_a_token_only_defined_globally_still_resolves(self):
+        css = """
+        :root { --brand-ink: #111111; }
+        [data-theme="dark"] {
+          /* contrast-pairs: brand-ink:color-page */
+          --color-page: #ffffff;
+        }
+        """
+        results = contrast.check_tokens(css, contrast.AA_NORMAL)
+        self.assertTrue(results[0].passed)
+
+
 class CommandLineTests(unittest.TestCase):
     def test_passing_pair_exits_zero(self):
         code, out, _ = run("--pair", "#111111", "#ffffff")

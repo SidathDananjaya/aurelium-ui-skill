@@ -178,23 +178,64 @@ def resolve_value(name: str, properties: Dict[str, str], depth: int = 0) -> Opti
     return fallback.strip() if fallback else None
 
 
+def parse_pair_list(text: str) -> List[Tuple[str, str]]:
+    """Parse one comment's worth of 'fg:bg, fg:bg' entries."""
+    pairs: List[Tuple[str, str]] = []
+    for entry in text.replace("\n", " ").split(","):
+        entry = entry.strip().rstrip("/").strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise ColorError(
+                "malformed contrast pair '{0}', expected 'foreground:background'".format(
+                    entry
+                )
+            )
+        foreground, _, background = entry.partition(":")
+        pairs.append((foreground.strip(), background.strip()))
+    return pairs
+
+
 def parse_declared_pairs(css: str) -> List[Tuple[str, str]]:
     """Read every 'contrast-pairs' comment into (foreground, background) names."""
     pairs: List[Tuple[str, str]] = []
     for block in CONTRAST_PAIRS_PATTERN.findall(css):
-        for entry in block.replace("\n", " ").split(","):
-            entry = entry.strip().rstrip("/").strip()
-            if not entry:
-                continue
-            if ":" not in entry:
-                raise ColorError(
-                    "malformed contrast pair '{0}', expected 'foreground:background'".format(
-                        entry
-                    )
-                )
-            foreground, _, background = entry.partition(":")
-            pairs.append((foreground.strip(), background.strip()))
+        pairs.extend(parse_pair_list(block))
     return pairs
+
+
+def enclosing_block(css: str, index: int) -> str:
+    """Return the text of the rule block containing the character at ``index``.
+
+    A stylesheet that declares light and dark palettes flattens into a single
+    property map, so the last theme in the file would silently be checked
+    twice. Scoping each pairs comment to its own block checks what the comment
+    actually refers to.
+    """
+    depth = 0
+    start = -1
+    for position in range(index, -1, -1):
+        char = css[position]
+        if char == "}":
+            depth += 1
+        elif char == "{":
+            if depth == 0:
+                start = position + 1
+                break
+            depth -= 1
+    if start == -1:
+        return css
+
+    depth = 0
+    for position in range(start, len(css)):
+        char = css[position]
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            if depth == 0:
+                return css[start:position]
+            depth -= 1
+    return css[start:]
 
 
 # ---------------------------------------------------------------------------
@@ -261,11 +302,26 @@ class Result:
 
 
 def check_tokens(css: str, threshold: float) -> List[Result]:
-    """Check every pair declared in the stylesheet's contrast-pairs comments."""
-    properties = parse_custom_properties(css)
+    """Check every pair declared in the stylesheet's contrast-pairs comments.
+
+    Each comment is resolved against its own rule block first, then against the
+    whole stylesheet, so a file carrying both a light and a dark palette is
+    checked once per theme rather than twice against whichever came last.
+    """
+    global_properties = parse_custom_properties(css)
     results: List[Result] = []
 
-    for foreground_name, background_name in parse_declared_pairs(css):
+    scoped: List[Tuple[str, str, Dict[str, str]]] = []
+    for match in CONTRAST_PAIRS_PATTERN.finditer(css):
+        block = enclosing_block(css, match.start())
+        block_properties = parse_custom_properties(block)
+        for foreground_name, background_name in parse_pair_list(match.group(1)):
+            scoped.append((foreground_name, background_name, block_properties))
+
+    for foreground_name, background_name, block_properties in scoped:
+        properties = dict(global_properties)
+        properties.update(block_properties)
+
         foreground_value = resolve_value(foreground_name, properties)
         background_value = resolve_value(background_name, properties)
 
