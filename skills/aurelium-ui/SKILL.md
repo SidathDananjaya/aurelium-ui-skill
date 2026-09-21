@@ -138,9 +138,13 @@ Load on demand. Do not read everything up front.
 | Purpose test, durations, easing, reduced motion | `references/motion/principles.md` |
 | Press, hover, overlays, lists, page transitions | `references/motion/recipes.md` |
 | What not to do, and what to do instead | `references/quality/anti-patterns.md` |
+| **The gate before saying done** | `references/quality/preflight.md` |
+| Scoring an interface, craft checklist | `references/quality/rubric.md` |
+| The craft pass, grouped by area | `references/quality/detail-checklist.md` |
+| Template persisted into the user's project | `assets/templates/DESIGN.md` |
 
-The remaining quality gates and the stack recipes are being added in later
-releases. Until they land, work from the references above.
+Stack recipes for Tailwind, React, and Next.js are being added in a later
+release. Until they land, default to HTML and CSS with the tokens above.
 
 ## Output contract
 

@@ -118,8 +118,8 @@ interface is not a luxury interface.
 **Rule.** Luxury that excludes is not luxury. Accessibility is a floor, not a
 feature.
 
-**Check.** Meets every requirement in `accessibility.md`, including the short
-list at the end of that file.
+**Check.** Meets every requirement in `accessibility.md`, and passes the full
+gate in `../quality/preflight.md`.
 
 **Do.** Give focus a visible, designed indicator that matches the brand.
 **Don't.** Remove the focus outline because it interrupts the composition.

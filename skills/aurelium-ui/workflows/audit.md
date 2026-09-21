@@ -22,8 +22,8 @@ the project's own rules is a stronger finding than a difference from ours.
 
 ## 2. Score
 
-Score each category 1 to 10 with a one line justification. Use the rubric
-weighting:
+Use `../references/quality/rubric.md`. Score each category 1 to 10 with a one
+line justification naming specific evidence. The weighting:
 
 | Category | Weight | Judged on |
 |---|---|---|
@@ -91,8 +91,8 @@ Work in small, reviewable changes. Do not rewrite a working component to match
 house style while fixing a contrast bug in it. State clearly which findings each
 change resolves.
 
-After applying, re-run the pre-flight in `create.md` step 10, and report what
-now passes that did not before.
+After applying, re-run `../references/quality/preflight.md` in full, and report
+what now passes that did not before.
 
 ## 6. Output
 
