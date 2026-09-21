@@ -175,6 +175,102 @@ class CoverageTests(unittest.TestCase):
             self.assertLess(lines, 300, "{0} is {1} lines".format(path.name, lines))
 
 
+class ArchetypeTests(unittest.TestCase):
+    EXPECTED = {
+        "landing", "dashboard", "analytics", "ecommerce",
+        "booking", "fintech", "admin", "auth-onboarding",
+    }
+    FILES = sorted(
+        p for p in (REFERENCES / "archetypes").glob("*.md") if p.stem != "index"
+    )
+    INDEX = REFERENCES / "archetypes" / "index.md"
+
+    REQUIRED_SECTIONS = (
+        "## User goals",
+        "## Primary tasks",
+        "## Information architecture",
+        "## Key screens",
+        "## Critical states",
+        "## Luxury moments",
+        "## Pitfalls",
+        "## Recommended directions and dials",
+    )
+
+    def test_all_eight_archetypes_ship(self):
+        self.assertEqual({p.stem for p in self.FILES}, self.EXPECTED)
+
+    def test_each_uses_the_full_template(self):
+        for path in self.FILES:
+            text = path.read_text(encoding="utf-8")
+            for heading in self.REQUIRED_SECTIONS:
+                self.assertIn(heading, text, "{0} missing {1}".format(path.name, heading))
+
+    def test_each_stays_under_two_hundred_lines(self):
+        for path in self.FILES:
+            lines = len(path.read_text(encoding="utf-8").splitlines())
+            self.assertLess(lines, 200, "{0} is {1} lines".format(path.name, lines))
+
+    def test_each_references_components_or_patterns(self):
+        # The plan requires archetypes to link out rather than repeat guidance.
+        for path in self.FILES:
+            text = path.read_text(encoding="utf-8")
+            links = re.findall(r"\.\./(?:components|patterns)/([a-z-]+\.md)", text)
+            self.assertGreaterEqual(
+                len(set(links)), 2,
+                "{0} references too few component or pattern files".format(path.name),
+            )
+
+    def test_every_referenced_relative_path_exists(self):
+        base = REFERENCES / "archetypes"
+        for path in list(self.FILES) + [self.INDEX]:
+            text = path.read_text(encoding="utf-8")
+            for relative in set(re.findall(r"`(\.\./[a-z0-9./-]+\.(?:md|py))`", text)):
+                self.assertTrue(
+                    (base / relative).resolve().is_file(),
+                    "{0} points at missing {1}".format(path.name, relative),
+                )
+
+    def test_each_recommends_dials_within_range(self):
+        for path in self.FILES:
+            text = path.read_text(encoding="utf-8")
+            section = text.split("## Recommended directions and dials", 1)[1]
+            numbers = [int(n) for n in re.findall(r"\|\s*(\d+)\s*\|", section)]
+            self.assertTrue(numbers, "{0} lists no dial values".format(path.name))
+            for value in numbers:
+                self.assertTrue(
+                    1 <= value <= 10,
+                    "{0} has a dial value of {1}".format(path.name, value),
+                )
+
+    def test_index_links_every_archetype(self):
+        index = self.INDEX.read_text(encoding="utf-8")
+        for path in self.FILES:
+            self.assertIn(
+                "{0}.md".format(path.stem), index,
+                "{0} missing from the archetype index".format(path.stem),
+            )
+
+    def test_index_maps_request_phrases(self):
+        index = self.INDEX.read_text(encoding="utf-8").lower()
+        # Phrases a user actually types, which is what the index is for.
+        for phrase in ("landing page", "dashboard", "checkout", "booking",
+                       "sign up", "admin", "analytics", "wallet"):
+            self.assertIn(phrase, index, phrase)
+
+    def test_every_archetype_is_in_the_reference_map(self):
+        skill_md = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        for path in list(self.FILES) + [self.INDEX]:
+            relative = path.relative_to(SKILL).as_posix()
+            self.assertIn(relative, skill_md, "{0} missing from reference map".format(relative))
+
+    def test_no_em_dashes(self):
+        offenders = [
+            p.name for p in list(self.FILES) + [self.INDEX]
+            if "—" in p.read_text(encoding="utf-8")
+        ]
+        self.assertEqual(offenders, [])
+
+
 class HouseStyleTests(unittest.TestCase):
     def test_no_em_dashes(self):
         offenders = [p.name for p in GUIDANCE_FILES if "—" in p.read_text(encoding="utf-8")]
