@@ -45,9 +45,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `motion/recipes.md`: thirteen recipes, each using tokens and each carrying a reduced-motion variant.
 - `quality/anti-patterns.md` with a complete motion section. The visual, UX, and copy sections land in a later release.
 - Motion tests enforcing a reduced-motion path per recipe, token-only durations, no bare easing keywords, and no animation from `scale(0)`.
+- `quality/preflight.md`, the authoritative gate: 59 numbered checks across eleven groups, each stating how to run it.
+- `quality/rubric.md` with the 40/30/20/10 weighting, a scoring scale, a six item craft checklist that caps categories on failure, and a worked example.
+- `quality/detail-checklist.md`, 76 craft checks grouped by typography, spacing, colour, interaction, content, responsive, and imagery.
+- `quality/anti-patterns.md` completed: 22 visual, 30 UX, 23 motion, and 20 copy entries.
+- `assets/templates/DESIGN.md`, the design system template persisted into user projects.
+- `tests/test_quality_layer.py`, guarding the gate's structure and the one-source-per-rule rule.
+
+### Changed
+
+- The create and audit workflows now point at `preflight.md`, `detail-checklist.md`, and `rubric.md` rather than restating them, so each rule has one source.
+- Restored the last two Phase 2 cross-links: `heuristics.md` to `quality/rubric.md` and `luxury-principles.md` to `quality/preflight.md`. The reference map debt is now clear.
 
 ### Fixed
 
+- The rubric's worked example gave 6.4 for a weighted total that is 6.3. Wrong arithmetic in a scoring rubric, caught by a test that recomputes it.
 - The reference snippet test parsed CSS line by line, so a declaration wrapped across several lines was read as having an empty value and skipped. It now parses whole blocks and catches multi-line violations.
 - Restored the cross-links in `luxury-principles.md` and `accessibility.md` that were written as prose in Phase 2 because their targets did not yet exist.
 - `contrast.py` checked a stylesheet carrying two palettes against whichever theme appeared last, twice, and never checked the other. Pairs are now resolved against their own rule block, so a light and dark file is checked once per theme.
