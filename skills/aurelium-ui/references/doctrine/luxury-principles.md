@@ -92,11 +92,12 @@ motion tokens.
 **Rule.** Empty, loading, error, and success states are designed, not left to
 the framework default. Microcopy is human and specific.
 
-**Check.** Every data-driven view ships every state in the complete-states rule:
-default, loading, empty on first use, empty with no results, recoverable error,
-fatal error, partial data, offline where applicable, success, long content, and
-permission denied where applicable. No view renders a bare spinner as its only
-loading state. No error message reads "Something went wrong" without a next step.
+**Check.** Every data-driven view ships every state in the complete-states rule,
+set out in full in `../patterns/states.md`: default, loading, empty on first use,
+empty with no results, recoverable error, fatal error, partial data, offline
+where applicable, success, long content, and permission denied where applicable.
+No view renders a bare spinner as its only loading state. No error message reads
+"Something went wrong" without a next step.
 
 **Do.** Write "We could not reach the payment service. Retry, or use a different card."
 **Don't.** Write "Error 500."
