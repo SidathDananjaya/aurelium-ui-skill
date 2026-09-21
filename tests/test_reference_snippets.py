@@ -15,7 +15,8 @@ REFERENCES = SKILL / "references"
 
 COMPONENT_FILES = sorted((REFERENCES / "components").glob("*.md"))
 PATTERN_FILES = sorted((REFERENCES / "patterns").glob("*.md"))
-GUIDANCE_FILES = COMPONENT_FILES + PATTERN_FILES
+MOTION_FILES = sorted((REFERENCES / "motion").glob("*.md"))
+GUIDANCE_FILES = COMPONENT_FILES + PATTERN_FILES + MOTION_FILES
 
 FENCE = re.compile(r"```(\w+)?\n(.*?)```", re.DOTALL)
 HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
@@ -32,6 +33,11 @@ PIXEL_ALLOWED = (
 )
 
 
+def flat_text(path):
+    """Lowercased with whitespace collapsed, so a wrapped phrase still matches."""
+    return re.sub(r"\s+", " ", path.read_text(encoding="utf-8")).lower()
+
+
 def code_blocks(path, language=None):
     text = path.read_text(encoding="utf-8")
     for lang, body in FENCE.findall(text):
@@ -39,29 +45,23 @@ def code_blocks(path, language=None):
             yield body
 
 
-def css_declarations(path):
-    """Yield (property, value) for each declaration in the file's CSS blocks.
+COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)
+DECLARATION = re.compile(r"([a-zA-Z-]+)\s*:\s*([^;{}]+?)\s*[;}]", re.DOTALL)
 
-    A selector may carry a pseudo-class colon and a whole rule may sit on one
-    line, so anything before an opening brace is dropped rather than parsed as
-    a declaration.
+
+def css_declarations(path):
+    """Yield (path, property, value) for each declaration in the CSS blocks.
+
+    Matching on the whole block rather than line by line handles declarations
+    that wrap across several lines, such as a multi-part transition. Selectors
+    are not matched because a selector is followed by an opening brace rather
+    than a semicolon, and at-rule preludes fall out for the same reason.
     """
     for body in code_blocks(path, "css"):
-        for line in body.splitlines():
-            line = line.split("/*", 1)[0].strip()
-            if line.startswith("@") or not line:
-                continue
-            if "{" in line:
-                # Keep only the declarations inside a single-line rule.
-                line = line.split("{", 1)[1].split("}", 1)[0].strip()
-            if ":" not in line:
-                continue
-            for declaration in line.split(";"):
-                declaration = declaration.strip()
-                if ":" not in declaration:
-                    continue
-                prop, _, value = declaration.partition(":")
-                yield path, prop.strip(), value.strip()
+        body = COMMENT.sub(" ", body)
+        for prop, value in DECLARATION.findall(body):
+            value = re.sub(r"\s+", " ", value).strip()
+            yield path, prop.strip(), value
 
 
 class TokenDisciplineTests(unittest.TestCase):
@@ -144,7 +144,8 @@ class CoverageTests(unittest.TestCase):
             self.assertTrue(blocks, "{0} has no code snippet".format(path.name))
 
     def test_every_file_ends_with_an_anti_patterns_table(self):
-        for path in GUIDANCE_FILES:
+        # Motion keeps its anti-patterns in quality/anti-patterns.md instead.
+        for path in COMPONENT_FILES + PATTERN_FILES:
             text = path.read_text(encoding="utf-8")
             self.assertIn("## Anti-patterns", text, path.name)
 
@@ -170,9 +171,131 @@ class CoverageTests(unittest.TestCase):
             self.assertIn(relative, skill_md, "{0} missing from reference map".format(relative))
 
     def test_files_stay_focused(self):
+        # recipes.md is a catalogue of eleven recipes, so it gets more room.
+        limits = {"recipes.md": 400}
         for path in GUIDANCE_FILES:
             lines = len(path.read_text(encoding="utf-8").splitlines())
-            self.assertLess(lines, 300, "{0} is {1} lines".format(path.name, lines))
+            limit = limits.get(path.name, 300)
+            self.assertLess(
+                lines, limit, "{0} is {1} lines, limit {2}".format(path.name, lines, limit)
+            )
+
+
+class MotionTests(unittest.TestCase):
+    """Motion guidance must obey the rules it states.
+
+    The acceptance check for the motion phase is that every recipe carries a
+    reduced-motion variant. That is the easiest thing to fudge in review, so it
+    is checked mechanically.
+    """
+
+    RECIPES = REFERENCES / "motion" / "recipes.md"
+    PRINCIPLES = REFERENCES / "motion" / "principles.md"
+
+    def test_both_motion_files_exist(self):
+        self.assertTrue(self.RECIPES.is_file())
+        self.assertTrue(self.PRINCIPLES.is_file())
+
+    def test_every_motion_css_block_handles_reduced_motion(self):
+        # Any block that animates must sit in a file that also addresses
+        # prefers-reduced-motion, and the recipes file addresses it per recipe.
+        for path in MOTION_FILES:
+            text = path.read_text(encoding="utf-8")
+            animates = any(
+                "transition:" in block or "animation:" in block
+                for block in code_blocks(path, "css")
+            )
+            if animates:
+                self.assertIn(
+                    "prefers-reduced-motion", text,
+                    "{0} animates without a reduced-motion path".format(path.name),
+                )
+
+    def test_each_recipe_section_has_a_reduced_motion_path(self):
+        text = self.RECIPES.read_text(encoding="utf-8")
+        # Split on level-two headings, skipping the intro and the checklist.
+        sections = re.split(r"\n## ", text)[1:]
+        skip = ("Recipe checklist",)
+        checked = 0
+        for section in sections:
+            heading = section.split("\n", 1)[0].strip()
+            if heading in skip:
+                continue
+            body = section
+            if "transition:" not in body and "animation:" not in body:
+                continue
+            checked += 1
+            self.assertIn(
+                "prefers-reduced-motion", body,
+                "recipe '{0}' has no reduced-motion variant".format(heading),
+            )
+        self.assertGreaterEqual(checked, 10, "expected at least 10 animated recipes")
+
+    def test_no_raw_millisecond_durations(self):
+        offenders = []
+        for path in MOTION_FILES:
+            for _, prop, value in css_declarations(path):
+                if prop.startswith("--"):
+                    continue
+                if not ("duration" in prop or prop in ("transition", "animation")):
+                    continue
+                # 1ms is the documented reduced-motion floor.
+                for match in re.findall(r"(\d+)ms", value):
+                    if match != "1":
+                        offenders.append(
+                            "{0}: {1}: {2}".format(path.name, prop, value)
+                        )
+        self.assertEqual(offenders, [], "raw millisecond values instead of tokens")
+
+    def test_no_bare_easing_keywords(self):
+        offenders = []
+        for path in MOTION_FILES:
+            for _, prop, value in css_declarations(path):
+                if prop.startswith("--") or prop not in ("transition", "animation"):
+                    continue
+                # "linear" is permitted for spinners, which live elsewhere.
+                if re.search(r"\b(ease-in-out|ease-in|ease-out)\b", value):
+                    offenders.append("{0}: {1}: {2}".format(path.name, prop, value))
+                elif re.search(r"\bease\b", value) and "var(--ease" not in value:
+                    offenders.append("{0}: {1}: {2}".format(path.name, prop, value))
+        self.assertEqual(offenders, [], "bare easing keyword instead of a token")
+
+    def test_never_animates_from_zero_scale(self):
+        for path in MOTION_FILES:
+            text = path.read_text(encoding="utf-8")
+            for block in code_blocks(path, "css"):
+                self.assertNotIn(
+                    "scale(0)", block,
+                    "{0} animates from scale(0)".format(path.name),
+                )
+
+    def test_principles_cover_the_required_topics(self):
+        text = flat_text(self.PRINCIPLES)
+        for topic in ("purpose test", "duration", "exit", "easing", "spring",
+                      "interruptib", "reduced motion", "stagger", "infinite"):
+            self.assertIn(topic, text, topic)
+
+    def test_recipes_cover_the_planned_set(self):
+        text = flat_text(self.RECIPES)
+        for recipe in ("button press", "hover lift", "dropdown", "modal",
+                       "drawer", "toast", "list add", "page transition",
+                       "skeleton", "count-up", "scroll reveal"):
+            self.assertIn(recipe, text, recipe)
+
+    def test_anti_patterns_file_has_a_complete_motion_section(self):
+        path = REFERENCES / "quality" / "anti-patterns.md"
+        self.assertTrue(path.is_file())
+        text = path.read_text(encoding="utf-8")
+        self.assertIn("## Motion", text)
+        section = text.split("## Motion", 1)[1].split("\n## ", 1)[0]
+        rows = [line for line in section.splitlines() if line.startswith("| **")]
+        self.assertGreaterEqual(len(rows), 15, "motion anti-patterns section is thin")
+
+    def test_motion_files_are_in_the_reference_map(self):
+        skill_md = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        for path in MOTION_FILES + [REFERENCES / "quality" / "anti-patterns.md"]:
+            relative = path.relative_to(SKILL).as_posix()
+            self.assertIn(relative, skill_md, "{0} missing from reference map".format(relative))
 
 
 class ArchetypeTests(unittest.TestCase):

@@ -41,9 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reference map in `SKILL.md` now covers all twelve component and pattern files.
 - Archetype references: marketing and landing, SaaS dashboard, analytics, e-commerce, booking, fintech, admin, and auth and onboarding, plus an index mapping request phrases to archetypes.
 - Archetype tests enforcing the eight-section template, the 200 line limit, dial ranges, and cross-references to component and pattern files.
+- `motion/principles.md`: the purpose test, duration by size and frequency, enter and exit asymmetry, easing tokens, springs, interruptibility, stagger, and reduced-motion alternatives.
+- `motion/recipes.md`: thirteen recipes, each using tokens and each carrying a reduced-motion variant.
+- `quality/anti-patterns.md` with a complete motion section. The visual, UX, and copy sections land in a later release.
+- Motion tests enforcing a reduced-motion path per recipe, token-only durations, no bare easing keywords, and no animation from `scale(0)`.
 
 ### Fixed
 
+- The reference snippet test parsed CSS line by line, so a declaration wrapped across several lines was read as having an empty value and skipped. It now parses whole blocks and catches multi-line violations.
 - Restored the cross-links in `luxury-principles.md` and `accessibility.md` that were written as prose in Phase 2 because their targets did not yet exist.
 - `contrast.py` checked a stylesheet carrying two palettes against whichever theme appeared last, twice, and never checked the other. Pairs are now resolved against their own rule block, so a light and dark file is checked once per theme.
 
