@@ -35,7 +35,7 @@ Not yet available. Install instructions land with the v0.1.0 release.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Contributors and agents working on this repository should read [CLAUDE.md](CLAUDE.md) first.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for ground rules, development setup, and what a new design direction or archetype must include.
 
 ## License
 
