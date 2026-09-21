@@ -277,18 +277,22 @@ def tracking_for(pixels: float) -> float:
 # ---------------------------------------------------------------------------
 
 
-def color_block(colors: Dict[str, str], indent: str = "  ") -> List[str]:
+def color_block(
+    colors: Dict[str, str], indent: str = "  ", prefix: str = ""
+) -> List[str]:
     return [
-        "{0}--color-{1}: {2};".format(indent, name, value)
+        "{0}--{1}color-{2}: {3};".format(indent, prefix, name, value)
         for name, value in colors.items()
     ]
 
 
-def contrast_comment(pairs: List[Dict[str, object]], theme: str) -> str:
+def contrast_comment(
+    pairs: List[Dict[str, object]], theme: str, prefix: str = ""
+) -> str:
     # Names are emitted with the same prefix the properties carry, so the
     # comment can be resolved directly against the declarations above it.
     names = [
-        "color-{0}:color-{1}".format(pair.get("fg"), pair.get("bg"))
+        "{0}color-{1}:{0}color-{2}".format(prefix, pair.get("fg"), pair.get("bg"))
         for pair in pairs
         if pair.get("theme") == theme
     ]
@@ -297,8 +301,9 @@ def contrast_comment(pairs: List[Dict[str, object]], theme: str) -> str:
     return "  /* contrast-pairs: {0} */".format(", ".join(names))
 
 
-def format_css(tokens: Dict[str, object], theme: str) -> str:
+def format_css(tokens: Dict[str, object], theme: str, prefix: str = "") -> str:
     lines: List[str] = []
+    p = prefix
     colors = tokens["colors"]
     pairs = tokens["contrast_pairs"]
 
@@ -314,127 +319,146 @@ def format_css(tokens: Dict[str, object], theme: str) -> str:
 
     fonts = tokens["fonts"]
     if fonts.get("display"):
-        lines.append('  --font-display: "{0}", Georgia, serif;'.format(fonts["display"]))
+        lines.append('  --{0}font-display: "{1}", Georgia, serif;'.format(p, fonts["display"]))
     if fonts.get("body"):
         lines.append(
-            '  --font-body: "{0}", ui-sans-serif, system-ui, sans-serif;'.format(
-                fonts["body"]
+            '  --{0}font-body: "{1}", ui-sans-serif, system-ui, sans-serif;'.format(
+                p, fonts["body"]
             )
         )
     if fonts.get("mono"):
         lines.append(
-            '  --font-mono: "{0}", ui-monospace, SFMono-Regular, monospace;'.format(
-                fonts["mono"]
+            '  --{0}font-mono: "{1}", ui-monospace, SFMono-Regular, monospace;'.format(
+                p, fonts["mono"]
             )
         )
     lines.append("")
 
     for name, value in tokens["type"]["sizes"].items():
-        lines.append("  --text-{0}: {1};".format(name, value))
+        lines.append("  --{0}text-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["leading"].items():
-        lines.append("  --leading-{0}: {1};".format(name, value))
+        lines.append("  --{0}leading-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["tracking"].items():
-        lines.append("  --tracking-{0}: {1};".format(name, value))
+        lines.append("  --{0}tracking-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["spacing"].items():
-        lines.append("  --space-{0}: {1};".format(name, value))
+        lines.append("  --{0}space-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["radii"].items():
-        lines.append("  --radius-{0}: {1};".format(name, value))
+        lines.append("  --{0}radius-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["shadows"].items():
-        lines.append("  --shadow-{0}: {1};".format(name, value))
+        lines.append("  --{0}shadow-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["borders"].items():
-        lines.append("  --border-{0}: {1};".format(name, value))
+        lines.append("  --{0}border-{1}: {2};".format(p, name, value))
     lines.append("")
     for name, value in tokens["motion"]["durations"].items():
-        lines.append("  --duration-{0}: {1};".format(name, value))
+        lines.append("  --{0}duration-{1}: {2};".format(p, name, value))
     for name, value in tokens["motion"]["easings"].items():
-        lines.append("  --ease-{0}: {1};".format(name, value))
+        lines.append("  --{0}ease-{1}: {2};".format(p, name, value))
 
     if theme in ("light", "auto"):
         lines.append("")
-        comment = contrast_comment(pairs, "light")
+        comment = contrast_comment(pairs, "light", p)
         if comment:
             lines.append(comment)
-        lines.extend(color_block(colors.get("light", {})))
+        lines.extend(color_block(colors.get("light", {}), prefix=p))
 
     lines.append("}")
 
     if theme == "dark":
         lines.append("")
         lines.append(":root {")
-        comment = contrast_comment(pairs, "dark")
+        comment = contrast_comment(pairs, "dark", p)
         if comment:
             lines.append(comment)
-        lines.extend(color_block(colors.get("dark", {})))
+        lines.extend(color_block(colors.get("dark", {}), prefix=p))
         lines.append("}")
 
     if theme == "auto":
         lines.append("")
         lines.append("@media (prefers-color-scheme: dark) {")
         lines.append("  :root:not([data-theme=\"light\"]) {")
-        comment = contrast_comment(pairs, "dark")
+        comment = contrast_comment(pairs, "dark", p)
         if comment:
             lines.append("  " + comment)
-        lines.extend(color_block(colors.get("dark", {}), indent="    "))
+        lines.extend(color_block(colors.get("dark", {}), indent="    ", prefix=p))
         lines.append("  }")
         lines.append("}")
         lines.append("")
         lines.append('[data-theme="dark"] {')
-        lines.extend(color_block(colors.get("dark", {})))
+        lines.extend(color_block(colors.get("dark", {}), prefix=p))
         lines.append("}")
 
     lines.append("")
     lines.append("@media (prefers-reduced-motion: reduce) {")
     lines.append("  :root {")
     for name in tokens["motion"]["durations"]:
-        lines.append("    --duration-{0}: 1ms;".format(name))
+        lines.append("    --{0}duration-{1}: 1ms;".format(p, name))
     lines.append("  }")
     lines.append("}")
 
     return "\n".join(lines)
 
 
-def format_tailwind(tokens: Dict[str, object]) -> str:
-    """Emit a Tailwind theme that points at the CSS custom properties."""
-    theme = {
-        "colors": {
-            name: "var(--color-{0})".format(name)
-            for name in tokens["colors"].get("light", {})
-        },
-        "fontFamily": {
-            key: ["var(--font-{0})".format(key)]
-            for key in tokens["fonts"]
-            if tokens["fonts"].get(key)
-        },
-        "fontSize": {
-            name: "var(--text-{0})".format(name) for name in tokens["type"]["sizes"]
-        },
-        "spacing": {
-            name: "var(--space-{0})".format(name) for name in tokens["spacing"]
-        },
-        "borderRadius": {
-            name: "var(--radius-{0})".format(name) for name in tokens["radii"]
-        },
-        "boxShadow": {
-            name: "var(--shadow-{0})".format(name) for name in tokens["shadows"]
-        },
-        "transitionDuration": {
-            name: "var(--duration-{0})".format(name)
-            for name in tokens["motion"]["durations"]
-        },
-        "transitionTimingFunction": {
-            name: "var(--ease-{0})".format(name)
-            for name in tokens["motion"]["easings"]
-        },
-    }
-    return "module.exports = {{\n  theme: {{\n    extend: {0}\n  }}\n}};".format(
-        json.dumps(theme, indent=6)
-    )
+def format_tailwind(tokens: Dict[str, object], theme: str = "auto") -> str:
+    """Emit a Tailwind v4 theme layered over the generated tokens.
+
+    Tailwind v4 is CSS first: the theme is declared with the ``@theme``
+    directive rather than a JavaScript config. ``@theme inline`` is required
+    here because the theme variables reference other custom properties. Without
+    ``inline`` Tailwind copies the value at build time, which freezes the light
+    palette and breaks theme switching entirely.
+
+    The raw tokens are emitted under an ``au-`` namespace so Tailwind's own
+    ``--color-*``, ``--text-*``, ``--spacing-*`` and ``--radius-*`` namespaces
+    stay free for the theme layer.
+    """
+    prefix = "au-"
+    lines = [format_css(tokens, theme, prefix=prefix), ""]
+
+    lines.append("/* Tailwind v4 theme layer. 'inline' keeps the var() reference,")
+    lines.append("   so switching theme switches the utilities too. */")
+    lines.append("@theme inline {")
+
+    fonts = tokens["fonts"]
+    for role in ("display", "body", "mono"):
+        if fonts.get(role):
+            lines.append(
+                "  --font-{0}: var(--{1}font-{0});".format(role, prefix)
+            )
+    lines.append("")
+
+    for name in tokens["colors"].get("light", {}):
+        lines.append(
+            "  --color-{0}: var(--{1}color-{0});".format(name, prefix)
+        )
+    lines.append("")
+
+    for name in tokens["type"]["sizes"]:
+        lines.append("  --text-{0}: var(--{1}text-{0});".format(name, prefix))
+    lines.append("")
+
+    for name in tokens["spacing"]:
+        lines.append("  --spacing-{0}: var(--{1}space-{0});".format(name, prefix))
+    lines.append("")
+
+    for name in tokens["radii"]:
+        lines.append("  --radius-{0}: var(--{1}radius-{0});".format(name, prefix))
+    lines.append("")
+
+    for name in tokens["shadows"]:
+        lines.append("  --shadow-{0}: var(--{1}shadow-{0});".format(name, prefix))
+    lines.append("")
+
+    for name in tokens["motion"]["easings"]:
+        lines.append("  --ease-{0}: var(--{1}ease-{0});".format(name, prefix))
+
+    lines.append("}")
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -536,7 +560,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if output == "json":
         print(json.dumps(tokens, indent=2))
     elif output == "tailwind":
-        print(format_tailwind(tokens))
+        print(format_tailwind(tokens, args.theme))
     else:
         print(format_css(tokens, args.theme))
 
