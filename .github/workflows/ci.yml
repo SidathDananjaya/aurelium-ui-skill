@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests and validation (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Confirm the validator is self documenting
+        run: python tools/validate_skill.py --help
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Validate the skill
+        run: python tools/validate_skill.py skills/
+
+      - name: Confirm the validator rejects a broken skill
+        run: |
+          if python tools/validate_skill.py tests/fixtures/broken-name; then
+            echo "Validator passed a deliberately broken fixture."
+            exit 1
+          fi
+          echo "Validator correctly rejected the broken fixture."
